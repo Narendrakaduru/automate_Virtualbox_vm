@@ -7,13 +7,14 @@ VM_CONFIG = {
   memory: ENV['memory'].to_i,
   cpus: ENV['cpu'].to_i,
   vram: ENV['vram'].to_i,
+  network_type: ENV['network_type']
   description: ENV['description']
 }
 
 Vagrant.configure("2") do |config|
   config.vm.define VM_CONFIG[:name] do |server|
     server.vm.box = VM_CONFIG[:box]
-    server.vm.network "public_network", ip: VM_CONFIG[:ip]
+    server.vm.network VM_CONFIG[:network_type], ip: VM_CONFIG[:ip]
     server.vm.hostname = VM_CONFIG[:hostname]
     server.vm.provider "virtualbox" do |vb|
       vb.name = VM_CONFIG[:vm_name]
