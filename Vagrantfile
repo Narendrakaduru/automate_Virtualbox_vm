@@ -1,13 +1,13 @@
 VM_CONFIG = {
-  name: ${definition_name},
-  box: ${box},
-  ip: ${ip},
-  hostname: ${hostname},
-  vm_name: ${vm_name},
-  memory: ${memory},
-  cpus: ${cpu},
-  vram: ${vram},
-  description: ${description}
+  name: ENV['definition_name'],
+  box: ENV['box'],
+  ip: ENV['ip'],
+  hostname: ENV['hostname'],
+  vm_name: ENV['vm_name'],
+  memory: ENV['memory'].to_i,
+  cpus: ENV['cpu'].to_i,
+  vram: ENV['vram'].to_i,
+  description: ENV['description']
 }
 
 Vagrant.configure("2") do |config|
