@@ -7,7 +7,7 @@ VM_CONFIG = {
   memory: ENV['memory'].to_i,
   cpus: ENV['cpu'].to_i,
   vram: ENV['vram'].to_i,
-  network_type: ENV['network_type']
+  network_type: ENV['network_type'],
   description: ENV['description']
 }
 
