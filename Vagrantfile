@@ -30,8 +30,12 @@ Vagrant.configure("2") do |config|
       ]
       vb.customize ["modifyvm", :id, "--description", VM_CONFIG[:description]]
     end
-    server.vm.provision "shell", path: "scripts/update.sh"
-    server.vm.provision "shell", path: "scripts/create_user.sh"
-    server.vm.provision "shell", path: "scripts/docker.sh"
+    if VM_CONFIG[:box].include?("ubuntu") || VM_CONFIG[:box].include?("centos")
+      server.vm.provision "shell", path: "scripts/update.sh"
+      server.vm.provision "shell", path: "scripts/create_user.sh"
+      server.vm.provision "shell", path: "scripts/docker.sh"
+    elsif VM_CONFIG[:box].include?("windows")
+      server.vm.provision "shell", path: "scripts/stop_windows_update.bat", privileged: false
+    end
   end
 end
