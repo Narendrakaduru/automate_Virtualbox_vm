@@ -1,5 +1,5 @@
 VM_CONFIG = {
-  name: ENV['definition_name'],
+  name: ENV['name'],
   box: ENV['box'],
   ip: ENV['ip'],
   hostname: ENV['hostname'],
@@ -12,11 +12,11 @@ VM_CONFIG = {
 }
 
 Vagrant.configure("2") do |config|
-  config.vm.define VM_CONFIG[:name] do |server|
-    server.vm.box = VM_CONFIG[:box]
-    server.vm.network VM_CONFIG[:network_type], ip: VM_CONFIG[:ip]
-    server.vm.hostname = VM_CONFIG[:hostname]
-    server.vm.provider "virtualbox" do |vb|
+  config.vm.define VM_CONFIG[:name] do |VM_CONFIG[:name]|
+    VM_CONFIG[:name].vm.box = VM_CONFIG[:box]
+    VM_CONFIG[:name].vm.network VM_CONFIG[:network_type], ip: VM_CONFIG[:ip]
+    VM_CONFIG[:name].vm.hostname = VM_CONFIG[:hostname]
+    VM_CONFIG[:name].vm.provider "virtualbox" do |vb|
       vb.name = VM_CONFIG[:vm_name]
       vb.memory = VM_CONFIG[:memory]
       vb.cpus = VM_CONFIG[:cpus]
@@ -31,11 +31,11 @@ Vagrant.configure("2") do |config|
       vb.customize ["modifyvm", :id, "--description", VM_CONFIG[:description]]
     end
     if VM_CONFIG[:box].include?("ubuntu") || VM_CONFIG[:box].include?("centos")
-      server.vm.provision "shell", path: "scripts/update.sh"
-      server.vm.provision "shell", path: "scripts/create_user.sh"
-      server.vm.provision "shell", path: "scripts/docker.sh"
+      VM_CONFIG[:name].vm.provision "shell", path: "scripts/update.sh"
+      VM_CONFIG[:name].vm.provision "shell", path: "scripts/create_user.sh"
+      VM_CONFIG[:name].vm.provision "shell", path: "scripts/docker.sh"
     elsif VM_CONFIG[:box].include?("windows")
-      server.vm.provision "shell", path: "scripts/stop_windows_update.bat", privileged: false
+      VM_CONFIG[:name].vm.provision "shell", path: "scripts/stop_windows_update.bat", privileged: false
     end
   end
 end
