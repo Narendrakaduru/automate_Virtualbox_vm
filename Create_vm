@@ -3,28 +3,28 @@ pipeline {
         label 'win-agent'
     }
     parameters {
-        string(name: 'definition_name', description: 'VM Name')
+        string(name: 'vm_name', description: 'VM Name')
+        string(name: 'definition_name', description: 'Definition of Server')
         choice(name: 'box', choices: ['bento/ubuntu-22.04', 'bento/centos-stream-9', 'bento/debian-12.5', 'gusztavvargadr/windows-10'], description: 'VM Box')
-        string(name: 'ip', description: 'VM IP Address')
         string(name: 'hostname', description: 'VM Hostname')
-        string(name: 'vm_name', description: 'VM Provider Name')
         choice(name: 'memory', choices: ['1024', '2048', '4096', '6144', '8192', '10240'], description: 'VM Memory in MB')
         choice(name: 'cpu', choices: ['2', '4', '6', '8'], description: 'VM CPU Count')
         choice(name: 'vram', choices: ['16', '64', '128'], description: 'VM Video RAM in MB')
-        string(name: 'network_type', defaultValue: 'public_network', description: 'Network Type')
-        string(name: 'description', defaultValue: 'My virtual machine', description: 'VM Description')
+        choice(name: 'network_type', choices: ['public_network', 'private_network'], description: 'Network Type')
+        string(name: 'ip', description: 'VM IP Address \n public_network = 192.168.1.xx, private_network = 192.168.x.xx')
+        string(name: 'description', defaultValue: 'IP: ', description: 'Description of VM')
     }
 
     environment {
-        VM_NAME = "${params.definition_name}"
+        VM_NAME = "${params.vm_name}"
+        VM_NAME_PROVIDER = "${params.definition_name}"
         BOX = "${params.box}"
-        IP = "${params.ip}"
         HOSTNAME = "${params.hostname}"
-        VM_NAME_PROVIDER = "${params.vm_name}"
         MEMORY = "${params.memory}"
         CPUS = "${params.cpu}"
         VRAM = "${params.vram}"
         NETWORK_TYPE = "${params.network_type}"
+        IP = "${params.ip}"
         DESCRIPTION = "${params.description}"
     }
 
@@ -47,15 +47,15 @@ pipeline {
             steps {
                 script {
                     echo "Configuring Vagrant VM with the following parameters:"
-                    echo "Name: ${VM_NAME}"
+                    echo "VM Name: ${VM_NAME}"
+                    echo "Definition Name: ${VM_NAME_PROVIDER}"
                     echo "Box: ${BOX}"
-                    echo "IP: ${IP}"
                     echo "Hostname: ${HOSTNAME}"
-                    echo "VM Name: ${VM_NAME_PROVIDER}"
                     echo "Memory: ${MEMORY} MB"
                     echo "CPUs: ${CPUS}"
                     echo "VRAM: ${VRAM} MB"
                     echo "Network Type: ${NETWORK_TYPE}"
+                    echo "IP: ${IP}"
                     echo "Description: ${DESCRIPTION}"
 
                     bat '''
