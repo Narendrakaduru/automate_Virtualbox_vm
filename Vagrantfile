@@ -1,13 +1,13 @@
 VM_CONFIG = {
+  vm_name: ENV['vm_name'],
   name: ENV['definition_name'],
   box: ENV['box'],
-  ip: ENV['ip'],
   hostname: ENV['hostname'],
-  vm_name: ENV['vm_name'],
   memory: ENV['memory'].to_i,
   cpus: ENV['cpu'].to_i,
   vram: ENV['vram'].to_i,
   network_type: ENV['network_type'],
+  ip: ENV['ip'],
   description: ENV['description']
 }
 
