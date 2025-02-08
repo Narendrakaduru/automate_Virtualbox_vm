@@ -1,0 +1,90 @@
+pipeline {
+    agent {
+        label 'win-agent'
+    }
+    environment {
+        RECIPIENT_EMAIL = "kadurunarendra@gmail.com, lharish609@gmail.com"
+        VLDOCSRV092 = "acf617c"
+        VLDOCSRV093 = "0175437"
+        VLDOCSRV094 = "819e11f"
+    }
+    stages {
+        stage('Send Maintenance Alert Down') {
+            steps {
+                emailext (
+                    subject: "Scheduled Server Maintenance Notification",
+                    body: """Dear Team,
+
+Please be informed that the following servers will undergo scheduled maintenance to enhance performance and stability:
+
+- VLDOCSRV092
+- VLDOCSRV093
+- VLDOCSRV094
+
+The maintenance window is expected to last approximately 30 minutes, during which the servers will be temporarily halted. We kindly request you to refrain from accessing these servers during this time.
+
+If you have any concerns or require further information, please feel free to reach out.
+
+Thank you for your understanding and cooperation.
+
+Best regards,  
+NK Tech""",
+                    to: "${RECIPIENT_EMAIL}"
+                )
+            }
+        }
+
+        stage('Stop Vagrant VMs') {
+            steps {
+                script {
+                    bat '''
+                    cd C:/Jenkins/workspace/Vagrant Box Automations/Vagrant_vms_maintenance
+                    vagrant halt %VLDOCSRV092%
+                    vagrant halt %VLDOCSRV093%
+                    vagrant halt %VLDOCSRV094%
+                    '''
+                    echo 'Sleeping to enhance performance and stability'
+                    sleep time: 10, unit: 'MINUTES'
+                }
+            }
+        }
+        
+        stage('Start Vagrant VMs') {
+            steps {
+                script {
+                    bat '''
+                    cd C:/Jenkins/workspace/Vagrant Box Automations/Vagrant_vms_maintenance
+                    vagrant up %VLDOCSRV092%
+                    vagrant up %VLDOCSRV093%
+                    vagrant up %VLDOCSRV094%
+                    '''
+                }
+            }
+        }
+        
+        stage('Send Maintenance Alert UP') {
+            steps {
+                emailext (
+                    subject: "Servers Now Up and Running",
+                    body: """Dear Team,
+
+We are pleased to inform you that the following servers have been successfully brought back online:
+
+- VLDOCSRV092
+- VLDOCSRV093
+- VLDOCSRV094
+
+The maintenance window has been completed, and all servers are now fully operational. You can resume access and normal operations.
+
+If you encounter any issues or require further assistance, please do not hesitate to reach out.
+
+Thank you for your patience.
+
+Best regards,  
+NK Tech""",
+                    to: "${RECIPIENT_EMAIL}"
+                )
+            }
+        }
+    }
+}
